@@ -15,5 +15,12 @@ var groundMaterial = (scene) => {
     return material;
 }
 
+var playerMaterial = (scene) => {
+    var material = new BABYLON.StandardMaterial("pmat", scene);
+    material.emissiveColor = BABYLON.Color3.FromHexString('#ff9900');
+    material.specularPower = 64;
+    return material;
+}
 
-export { boxMaterial, groundMaterial };
+
+export { boxMaterial, groundMaterial, playerMaterial };

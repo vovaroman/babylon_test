@@ -5,6 +5,9 @@ import Light from "./light.js";
 import Ground from "./ground.js";
 import addClick from "./events.js"
 import { animateBaseBox, incrementBoxCounter } from "./animation.js";
+import Shadow from './shadow.js'
+import Player from './player.js'
+import Controls from './controls.js'
 
 var scene = new BABYLON.Scene(engine)
 scene.clearColor = new BABYLON.Color3(0, 0, 0.2);
@@ -14,25 +17,24 @@ scene.collisionsEnabled = true;
 var sky = new BABYLON.HemisphericLight("sky", new BABYLON.Vector3(0, 1.0, 0), scene);
 sky.intensity = 0.5;
 
-var torch = new BABYLON.PointLight("light1",BABYLON.Vector3.Zero(), scene);
-torch.intensity = 0.7;
-torch.diffuse = BABYLON.Color3.FromHexString('#ff9944');
-
-
-var shadowGenerator = new BABYLON.ShadowGenerator(1024, torch);
-shadowGenerator.setDarkness(0.2);
-shadowGenerator.useBlurVarianceShadowMap = true;
-shadowGenerator.blurBoxOffset = 1.0;
-shadowGenerator.blurScale = 20.0;
 
 const ground = Ground(scene)
 
-var camera = Camera(scene);
 
-// var light = Light(scene);
+var player = Player(scene, shadowGenerator);
+
+var camera = Camera(scene, player);
+
+var controls = Controls(scene, player, camera)
+
+var light = Light(scene);
+var shadowGenerator = Shadow(light);
+
+shadowGenerator.getShadowMap().renderList.push(player);
+
 
 addClick(scene, function(_proto_vector){
-    var b = Box(scene);
+    var b = Box(scene, shadowGenerator);
     b.position.x = _proto_vector._x;
     b.position.y = _proto_vector._y < 1 ? 1 : _proto_vector._y;
     b.position.z = _proto_vector._z;
